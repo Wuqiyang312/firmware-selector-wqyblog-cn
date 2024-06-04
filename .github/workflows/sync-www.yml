@@ -44,7 +44,6 @@ jobs:
           if [ -n "$(git status --porcelain)" ]; then
             git add .
             git commit -m "Sync /www/ directory from master"
-            git push origin www
           else
             echo "No changes to commit"
           fi
@@ -53,11 +52,8 @@ jobs:
         run: |
           cd www-repo
           if [ -n "$(git status --porcelain)" ]; then
-            git add .
-            git commit -m "Sync /www/ directory from master"
+            git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
             git push origin www
           else
             echo "No changes to commit"
           fi
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
