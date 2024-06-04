@@ -4,7 +4,7 @@ let current_device = {};
 let current_language = undefined;
 let current_language_json = undefined;
 let url_params = undefined;
-const ofs_version = "%GIT_VERSION%";
+const ofs_version = "NULL";
 
 let progress = {
   "tr-init": 10,
