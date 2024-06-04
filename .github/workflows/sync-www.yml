@@ -15,13 +15,36 @@ jobs:
         with:
           ref: master
 
+      - name: Set up git
+        run: |
+          git config --global user.name 'Wuqiyang312'
+          git config --global user.email 'wuqiyang312@163.com'
+      
+      - name: Fetch all branches
+        run: git fetch origin
+
+      - name: Clone www branch or create if not exists
+        run: |
+          if git ls-remote --exit-code --heads origin www; then
+            git clone --branch www https://github.com/Wuqiyang312/firmware-selector-wqyblog-cn.git www-repo
+          else
+            git clone https://github.com/Wuqiyang312/firmware-selector-wqyblog-cn.git www-repo
+            cd www-repo
+            git checkout --orphan www
+            git rm -rf .
+            git commit --allow-empty -m "Initialize www branch"
+            git push origin www
+            cd ..
+          fi
+
       - name: Copy /www/ directory
         run: |
-          git config --global user.name Wuqiyang312
-          git config --global user.email wuqiyang312@163.com
-          git clone --branch www --single-branch https://github.com/Wuqiyang312/firmware-selector-wqyblog-cn.git www-repo
           cp -r www/* www-repo/
           cd www-repo
-          git add .
-          git commit -m "Sync /www/ directory from master"
-          git push origin www
+          if [ -n "$(git status --porcelain)" ]; then
+            git add .
+            git commit -m "Sync /www/ directory from master"
+            git push origin www
+          else
+            echo "No changes to commit"
+          fi
