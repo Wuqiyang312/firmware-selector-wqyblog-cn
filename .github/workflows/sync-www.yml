@@ -1,0 +1,27 @@
+name: Sync www directory to www branch
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  sync-www:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout master branch
+        uses: actions/checkout@v2
+        with:
+          ref: master
+
+      - name: Copy /www/ directory
+        run: |
+          git config --global user.name Wuqiyang312
+          git config --global user.email wuqiyang312@163.com
+          git clone --branch www --single-branch https://github.com/Wuqiyang312/firmware-selector-wqyblog-cn.git www-repo
+          cp -r www/* www-repo/
+          cd www-repo
+          git add .
+          git commit -m "Sync /www/ directory from master"
+          git push origin www
